@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import app.dto.CategoryDTO;
-import app.entities.CategoryEntity;
-import app.entities.NoteEntity;
+import app.dto.RequestCategoryDTO;
+import app.dto.ResponseCategoryDTO;
+import app.dto.ResponseNoteDTO;
+import app.entities.Category;
+import app.entities.Note;
 import app.services.ICategoryService;
 import app.services.INoteService;
 
@@ -24,11 +26,11 @@ public class CategoryController {
     private ICategoryService categoryService;
 
 
-    @GetMapping("/all")
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+    @GetMapping("/")
+    public ResponseEntity<List<ResponseCategoryDTO>> getAllCategories() {
         try {
-            List<CategoryEntity> categories = categoryService.findAll();
-            List<CategoryDTO> categoryDTOs = categories.stream().map(CategoryDTO::new).toList();
+            List<Category> categories = categoryService.findAll();
+            List<ResponseCategoryDTO> categoryDTOs = categories.stream().map(ResponseCategoryDTO::new).toList();
             return new ResponseEntity<>(categoryDTOs, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -36,21 +38,24 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
         try {
-            return categoryService.findById(id)
-                    .map(category -> new ResponseEntity<>(new CategoryDTO(category), HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        	Optional<Category> categoryOptional = categoryService.findById(id);
+        	if (!categoryOptional.isPresent()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
+        	}
+        	Category category = categoryOptional.get();
+			return new ResponseEntity<>(new ResponseCategoryDTO(category), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
+    @PostMapping("/")
+    public ResponseEntity<ResponseCategoryDTO> createCategory(@RequestBody RequestCategoryDTO categoryDTO) {
         try {
-            CategoryEntity savedCategory = categoryService.save(categoryDTO.toEntity());
-            return new ResponseEntity<>(new CategoryDTO(savedCategory), HttpStatus.CREATED);
+            Category savedCategory = categoryService.save(categoryDTO.toEntity());
+            return new ResponseEntity<>(new ResponseCategoryDTO(savedCategory), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

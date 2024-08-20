@@ -1,29 +1,23 @@
 package app.dto;
 
-import app.entities.CategoryEntity;
+import app.entities.Category;
 
 
-public class CategoryDTO {
+public class ResponseCategoryDTO {
 
     private Long id;
     private String name;
     
     
-	public CategoryDTO() {
+	public ResponseCategoryDTO() {
 
 	}
 	
-    public CategoryDTO(CategoryEntity entity) {
+    public ResponseCategoryDTO(Category entity) {
         this.id = entity.getId();
         this.name = entity.getName();
     }
     
-    public CategoryEntity toEntity() {
-        CategoryEntity entity = new CategoryEntity();
-        entity.setId(this.id);
-        entity.setName(this.name);
-        return entity;
-    }
 
 	public Long getId() {
 		return id;

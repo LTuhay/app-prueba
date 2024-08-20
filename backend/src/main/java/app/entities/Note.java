@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "notes")
-public class NoteEntity {
+public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +24,13 @@ public class NoteEntity {
         joinColumns = @JoinColumn(name = "note_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<CategoryEntity> categories = new HashSet<>();
+    private Set<Category> categories = new HashSet<>();
 
-	public NoteEntity() {
+	public Note() {
 
 	}
 
-	public NoteEntity(String title, String content, boolean archived) {
+	public Note(String title, String content, boolean archived) {
 		this.title = title;
 		this.content = content;
 		this.archived = archived;
@@ -72,11 +72,11 @@ public class NoteEntity {
 
 
 
-	public Set<CategoryEntity> getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(Set<CategoryEntity> categories) {
+	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
 	}
 

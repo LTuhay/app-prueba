@@ -7,41 +7,39 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.entities.CategoryEntity;
-import app.entities.NoteEntity;
-import app.repository.CategoryRepository;
+import app.entities.Category;
+import app.entities.Note;
+import app.repository.ICategoryRepository;
 
 @Service
 public class CategoryService implements ICategoryService {
 	
 	@Autowired
-	private CategoryRepository categoryRepo;
+	private ICategoryRepository categoryRepository;
 
 	@Override
-	public List<CategoryEntity> findAll() {		
-		return categoryRepo.findAll();
+	public List<Category> findAll() {		
+		return categoryRepository.findAll();
 	}
 
 	@Override
-	public Optional<CategoryEntity> findById(Long id) {		
-		return categoryRepo.findById(id);
+	public Optional<Category> findById(Long id) {		
+		return categoryRepository.findById(id);
 	}
 
 	@Override
-	public CategoryEntity save(CategoryEntity category) {
-		return categoryRepo.save(category);
+	public Category save(Category category) {
+		return categoryRepository.save(category);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		categoryRepo.deleteById(id);
+		categoryRepository.deleteById(id);
 	}
-
+	
 	@Override
-	public Optional<CategoryEntity> findByName(String name) {		
-		return categoryRepo.findByName(name);
+	public Optional<Category> findByName(String name) {		
+		return categoryRepository.findByName(name);
 	}
-
-
 
 }

@@ -2,12 +2,14 @@ package app.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "categories")
-public class CategoryEntity {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,13 +18,13 @@ public class CategoryEntity {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<NoteEntity> notes = new HashSet<>();
+    private List<Note> notes = new ArrayList<>();
 
-	public CategoryEntity() {
+	public Category() {
 
 	}
 
-	public CategoryEntity(String name, Set<NoteEntity> notes) {
+	public Category(String name, List<Note> notes) {
 		this.name = name;
 		this.notes = notes;
 	}
@@ -43,11 +45,11 @@ public class CategoryEntity {
 		this.name = name;
 	}
 
-	public Set<NoteEntity> getNotes() {
+	public List<Note> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(Set<NoteEntity> notes) {
+	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
 

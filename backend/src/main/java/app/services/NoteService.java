@@ -8,45 +8,43 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.entities.CategoryEntity;
-import app.entities.NoteEntity;
-import app.repository.CategoryRepository;
-import app.repository.NoteRepository;
+import app.entities.Category;
+import app.entities.Note;
+import app.repository.ICategoryRepository;
+import app.repository.INoteRepository;
 
 @Service
 public class NoteService implements INoteService {
 	
 	@Autowired
-	private NoteRepository noteRepo;
-	@Autowired
-	private CategoryRepository categoryRepo;
+	private INoteRepository noteRepository;
 
 	@Override
-	public List<NoteEntity> findAll() {
-		return noteRepo.findAll();
+	public List<Note> findAll() {
+		return noteRepository.findAll();
 	}
 
 	@Override
-	public Optional<NoteEntity> findById(Long id) {
-		return noteRepo.findById(id);
+	public Optional<Note> findById(Long id) {
+		return noteRepository.findById(id);
 	}
 
 	@Override
-	public NoteEntity save(NoteEntity note) {
-		return noteRepo.save(note);
+	public Note save(Note note) {
+		return noteRepository.save(note);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		noteRepo.deleteById(id);
+		noteRepository.deleteById(id);
 
 	}
 
 	@Override
-	public Optional<NoteEntity> findByCategory(String category) {
-	    List<NoteEntity> notesWithCategory = new ArrayList<>();
-	    for (NoteEntity note : noteRepo.findAll()) {
-	        for (CategoryEntity noteCategory : note.getCategories()) {
+	public Optional<Note> findByCategory(String category) {
+	    List<Note> notesWithCategory = new ArrayList<>();
+	    for (Note note : noteRepository.findAll()) {
+	        for (Category noteCategory : note.getCategories()) {
 	            if (noteCategory.getName().equals(category)) {
 	                notesWithCategory.add(note);
 	                break;
@@ -64,28 +62,33 @@ public class NoteService implements INoteService {
 
 
 	@Override
-	public void addCategory(NoteEntity note, CategoryEntity cateogry) {
-		Set<CategoryEntity> categories = note.getCategories();
+	public void addCategory(Note note, Category cateogry) {
+		Set<Category> categories = note.getCategories();
 		categories.add(cateogry);
 		note.setCategories(categories);
-		noteRepo.save(note);
+		noteRepository.save(note);
 
 	}
 
 	@Override
-	public Set<CategoryEntity> listCategories(NoteEntity note) {
-		Set<CategoryEntity> categories = note.getCategories();
+	public Set<Category> listCategories(Note note) {
+		Set<Category> categories = note.getCategories();
 		return categories;
 	}
 
 	@Override
-	public List<NoteEntity> findByArchivedTrue() {
-		return noteRepo.findByArchivedTrue();
+	public List<Note> findByArchivedTrue() {
+		return noteRepository.findByArchivedTrue();
 	}
 
 	@Override
-	public List<NoteEntity> findByArchivedFalse() {
-		return noteRepo.findByArchivedFalse();
+	public List<Note> findByArchivedFalse() {
+		return noteRepository.findByArchivedFalse();
 	}
+	
+    @Override
+    public List<Note> findByCategoryId(Long categoryId) {
+        return noteRepository.findByCategoryId(categoryId);
+    }
 
 }

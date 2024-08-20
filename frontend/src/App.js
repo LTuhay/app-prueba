@@ -1,57 +1,73 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
-import AddNote from './Components/AddNote';
 import NoteListConditional from './Components/NoteListConditional';
-import NewCategoryForm from './Components/NewCategoryForm';
+import Login from './Components/Login';
+import Swal from 'sweetalert2';
 
 const App = () => {
-  const [activeComponent, setActiveComponent] = useState('allNotes');
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    const [activeComponent, setActiveComponent] = useState('activeNotes');
+    const username = localStorage.getItem('username');
 
-  const showAddNote = () => {
-    setActiveComponent('addNote');
-  };
+    const showActiveNotes = () => {
+        setActiveComponent('activeNotes');
+    };
 
-  const showAddCategory = () => {
-    setIsAddingCategory(true);
-  };
+    const showArchivedNotes = () => {
+        setActiveComponent('archivedNotes');
+    };
 
+    const handleLogin = () => {
+        setIsAuthenticated(true);
+    };
 
-  const showActiveNotes = () => {
-    setActiveComponent('activeNotes');
-  };
+    const handleLogout = () => {
+      Swal.fire({
+        title: 'Goodbye!',
+        text: 'You have been logged out.',
+        icon: 'info',
+        confirmButtonText: 'OK',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            setIsAuthenticated(false);
+        }
+    });
+    };
 
-  const showArchivedNotes = () => {
-    setActiveComponent('archivedNotes');
-  };
+    useEffect(() => {
+        if (isAuthenticated) {
+            showActiveNotes();
+        }
+    }, [isAuthenticated]);
 
-  useEffect(() => {
-    showActiveNotes();
-  }, []); 
-
-  return (
-    <div>
-
-
-      <div className='container d-flex flex-column align-items-center justify-content-center p-4'>
+    return (
         <div>
-          <nav className="mt-3 mb-3">
-            <button className="btn btn-light" onClick={showActiveNotes}>Active Notes</button>
-            <button className="btn btn-light" onClick={showArchivedNotes}>Archived Notes</button>
-          </nav>
+            {!isAuthenticated ? (
+                <Login onLogin={handleLogin} />
+            ) : (
+                <div className='container d-flex flex-column align-items-center justify-content-center p-4'>
+                    <div>
+                        <nav className="mt-1 mb-1">
+                            {username && (
+                                <div className="welcome-message" >
+                                    <span>Welcome, {username}!</span>
+                                </div>
+                            )}
+                            <button className="btn btn-light" onClick={showActiveNotes}>Active Notes</button>
+                            <button className="btn btn-light" onClick={showArchivedNotes}>Archived Notes</button>
+                            <button className="btn btn-light" onClick={handleLogout}>Logout</button>
+                        </nav>
+                    </div>
+                    <div className="mt-1 mb-1">
+                        {activeComponent === 'activeNotes' && <NoteListConditional showArchived={false} />}
+                        {activeComponent === 'archivedNotes' && <NoteListConditional showArchived={true} />}
+                    </div>
+                </div>
+            )}
         </div>
-        <div className="mt-3 mb-3">
-          {activeComponent === 'addNote' && <AddNote />}
-          {activeComponent === 'activeNotes' && <NoteListConditional showArchived={false} />}
-          {activeComponent === 'archivedNotes' && <NoteListConditional showArchived={true} />}
-        </div>
-        <div className="mt-3 mb-3">
-          <button className="btn btn-light" onClick={showAddNote}>Add Note</button>
-          <button className="btn btn-light" onClick={showAddCategory}>Add Category</button>
-        </div>
-        {isAddingCategory && <NewCategoryForm onCategoryAdded={() => setIsAddingCategory(false)} />}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default App;

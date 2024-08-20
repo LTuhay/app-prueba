@@ -4,27 +4,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import app.entities.CategoryEntity;
-import app.entities.NoteEntity;
+import app.entities.Category;
+import app.entities.Note;
 
 public interface INoteService {
 	
-	public List<NoteEntity> findAll();
+	public List<Note> findAll();
 
-	public Optional<NoteEntity> findById(Long id);
+	public Optional<Note> findById(Long id);
 
-	public NoteEntity save(NoteEntity note);
+	public Note save(Note note);
 
 	public void deleteById(Long id);
 
-	public Optional<NoteEntity> findByCategory(String category);
+	public Optional<Note> findByCategory(String category);
 
-	public void addCategory (NoteEntity note, CategoryEntity category);
+	public void addCategory (Note note, Category category);
 
-	public Set<CategoryEntity> listCategories (NoteEntity note);
+	public Set<Category> listCategories (Note note);
 	
-	public List<NoteEntity> findByArchivedTrue();
+	public List<Note> findByArchivedTrue();
 	
-	public List<NoteEntity> findByArchivedFalse();
+	public List<Note> findByArchivedFalse();
+	
+	public List<Note> findByCategoryId(Long categoryId);
 
 }
